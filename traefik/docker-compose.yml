@@ -1,0 +1,24 @@
+version: '3'
+
+networks:
+  reverse-proxy:
+    external:
+      name: reverse-proxy
+
+services:
+  traefik:
+    image: traefik
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8081:8081"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/traefik.toml
+      - ./acme.json:/acme.json
+    restart: unless-stopped
+    networks:
+      - reverse-proxy
+    labels:
+      - "traefik.frontend.rule=Host:monitor.tensouth.net"
+      - "traefik.port=8081"

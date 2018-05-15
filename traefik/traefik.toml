@@ -19,7 +19,7 @@ watch = true
 exposedByDefault = false
 
 [acme]
-email = "test@tensouth.net"
+email = "admin@tensouth.net"
 storage = "acme.json"
 onHostRule = true
 entryPoint = "https"

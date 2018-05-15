@@ -1,14 +1,13 @@
-# defaultEntryPoints = ["https", "http"]
-defaultEntryPoints = ["http"]
+defaultEntryPoints = ["http", "https"]
 
 [entryPoints]
   [entryPoints.http]
   address = ":80"
-  #   [entryPoints.http.redirect]
-  #   entryPoint = "https"
-  # [entryPoints.https]
-  # address = ":443"
-  #   [entryPoints.https.tls]
+    [entryPoints.http.redirect]
+    entryPoint = "https"
+  [entryPoints.https]
+  address = ":443"
+    [entryPoints.https.tls]
   [entryPoints.traefik]
   address = ":8081"
 
@@ -16,11 +15,13 @@ defaultEntryPoints = ["http"]
 dashboard = true
 
 [docker]
+watch = true
 exposedByDefault = false
 
-# [acme]
-# email = ""
-# storage = "acme.json"
-# entryPoint = "https"
-# [acme.httpChallenge]
-# entryPoint = "http"
+[acme]
+email = "test@tensouth.net"
+storage = "acme.json"
+onHostRule = true
+entryPoint = "https"
+[acme.httpChallenge]
+entryPoint = "http"

@@ -6,5 +6,6 @@ A deployment of Traefik. This is modeled on the [Traefik Quickstart example](htt
 
 ```
 cd traefik
+chmod 600 acme.json
 docker-compose up -d
 ```

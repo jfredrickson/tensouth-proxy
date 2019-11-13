@@ -9,3 +9,11 @@ cd traefik
 touch acme.json && chmod 600 acme.json
 docker-compose up -d
 ```
+
+## Dashboard
+
+The Traefik dashboard is only available to localhost on the server. In order to access it, one method is to SSH to the server with a tunnel:
+
+```
+ssh -L 8081:localhost:8081 traefik.server.name
+```

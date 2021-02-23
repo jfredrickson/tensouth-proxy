@@ -4,18 +4,46 @@ networks:
   reverse-proxy:
     external:
       name: reverse-proxy
+  public:
+    external:
+      name: public
 
 services:
   traefik:
-    image: traefik:1.7
+    image: traefik:2.4
+    command:
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      # For testing
+      #- --certificatesResolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      - --certificatesResolvers.letsencrypt.acme.email=admin@tensouth.net
+      - --certificatesResolvers.letsencrypt.acme.storage=acme.json
+      - --certificatesResolvers.letsencrypt.acme.httpChallenge=true
+      - --certificatesResolvers.letsencrypt.acme.httpChallenge.entryPoint=web
     ports:
       - "80:80"
       - "443:443"
-      - "127.0.0.1:8081:8081"
+      - "127.0.0.1:8081:8080"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik.toml:/traefik.toml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./acme.json:/acme.json
     restart: unless-stopped
     networks:
+      - public
       - reverse-proxy
+    labels:
+      - traefik.enable=true
+      # Dashboard
+      - traefik.http.routers.api.entrypoints=web
+      - traefik.http.routers.api.rule=Host(`traefik.docker.localhost`)
+      - traefik.http.routers.api.service=api@internal
+      # Redirect http to https for all routers
+      - traefik.http.routers.webAll.rule=HostRegexp(`{host:.+}`)
+      - traefik.http.routers.webAll.entrypoints=web
+      - traefik.http.routers.webAll.middlewares=httpsRedirect
+      - traefik.http.middlewares.httpsRedirect.redirectscheme.scheme=https
+

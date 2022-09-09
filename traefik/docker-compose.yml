@@ -10,7 +10,7 @@ networks:
 
 services:
   traefik:
-    image: traefik:2.4
+    image: traefik:2.8
     command:
       - --api.dashboard=true
       - --api.insecure=true
